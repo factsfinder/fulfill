@@ -2,22 +2,16 @@ import { Stack } from "@mui/material";
 
 import TableCell from "./TableCell";
 
-export declare interface rowProps {
-  columnName: string;
-  row: {
-    id: number | string;
-    albumId?: number;
-    title?: string;
-    url?: string;
-    thumbnailUrl?: string;
-  };
-}
-
-function TableRow({ columnName, row }: rowProps): JSX.Element {
+function TableRow({ rowData, onClick }: any): JSX.Element {
   return (
-    <Stack direction="row">
-      {Object.keys(row).map((r: any) => (
-        <TableCell key={r.id} value={r["columnName"]} />
+    <Stack
+      direction="row"
+      spacing={2}
+      sx={{ border: "0.5px solid rgba(0,0,0,0.2)", cursor: "pointer" }}
+      onClick={onClick}
+    >
+      {rowData.map((row: any) => (
+        <TableCell key={row.id} value={row.value} />
       ))}
     </Stack>
   );

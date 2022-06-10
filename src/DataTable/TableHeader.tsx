@@ -1,18 +1,18 @@
-import { Box, Stack, Typography } from "@mui/material";
-import React from "react";
+import { Stack, Typography } from "@mui/material";
 
-export declare interface headerProps {
+type headerProps = {
   columnsInfo: {
+    field: string;
     label: string;
     width?: string | undefined;
   }[];
-}
+};
 
 function TableHeader({ columnsInfo }: headerProps): JSX.Element {
   return (
-    <Stack direction="row">
-      {columnsInfo.map(({ label, width }: any) => {
-        return <Typography key={label}></Typography>;
+    <Stack direction="row" spacing={4}>
+      {columnsInfo.map(({ field, label }: any) => {
+        return <Typography key={field}>{label}</Typography>;
       })}
     </Stack>
   );
