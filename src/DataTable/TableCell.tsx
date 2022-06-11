@@ -1,19 +1,25 @@
-import { Box, Typography } from "@mui/material";
+import React from "react";
 
 type cellProps = {
-  value: string | number | undefined;
+  cellData: {
+    value: string | number | boolean;
+    align?: "left" | "center" | "right";
+    numeric?: boolean;
+    width?: string;
+  };
+  children?: React.ReactNode | null;
 };
 
-function TableCell({ value }: cellProps) {
+function TableCell({ cellData, children }: cellProps) {
+  const { width, value, align } = cellData;
   return (
-    <Box
-      sx={{
-        borderLeft: "1px solid rgba(0,0,0, 0.2)",
-        bordeRight: "1px solid rgba(0,0,0, 0.2)",
-      }}
-    >
-      <Typography sx={{ padding: "0.5em 0" }}>{value}</Typography>
-    </Box>
+    <div className="table-cell" style={{ width: width ?? "100px" }}>
+      {children ?? (
+        <p style={{ textAlign: align }} className="table-cell--text">
+          {value}
+        </p>
+      )}
+    </div>
   );
 }
 

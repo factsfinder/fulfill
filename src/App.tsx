@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
-import { Box } from "@mui/material";
 import axios from "axios";
 
 import DataTable from "./DataTable";
 
 const tableColumns = [
-  { field: "id", label: "id", numeric: true },
-  { field: "albumId", label: "Album Id", numeric: true },
-  { field: "title", label: "Title", numeric: false, width: "200px" },
-  { field: "url", label: "Url", numeric: false, width: "300px" },
+  { field: "id", label: "id", numeric: true, align: "right" },
+  { field: "albumId", label: "Album Id", numeric: true, align: "center" },
+  { field: "title", label: "Title", width: "200px" },
+  { field: "url", label: "Url", width: "300px", align: "center" },
   {
     field: "thumbnailUrl",
     label: "Thumbnail Url",
-    numeric: false,
     width: "300px",
   },
 ];
@@ -24,7 +22,7 @@ function App() {
     axios
       .get("https://jsonplaceholder.typicode.com/photos")
       .then((res) => {
-        const rowsData = res.data?.slice(0, 10) ?? [];
+        const rowsData = res.data?.slice(0, 15) ?? [];
         setTableRows(rowsData);
       })
       .catch((err) => {
@@ -33,18 +31,9 @@ function App() {
   }, []);
 
   return (
-    <Box
-      sx={{
-        width: "100vw",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        margin: "2em auto",
-      }}
-    >
+    <div className="container flex flex--column">
       <DataTable columns={tableColumns} rows={tableRows} />
-    </Box>
+    </div>
   );
 }
 

@@ -1,20 +1,44 @@
-import { Stack, Typography } from "@mui/material";
+import React from "react";
 
 type headerProps = {
   columnsInfo: {
     field: string;
     label: string;
-    width?: string | undefined;
+    width?: string;
   }[];
+  allRowsSelected: boolean;
+  onSelectAllRows: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-function TableHeader({ columnsInfo }: headerProps): JSX.Element {
+function TableHeader({
+  columnsInfo,
+  onSelectAllRows,
+  allRowsSelected,
+}: headerProps): JSX.Element {
   return (
-    <Stack direction="row" spacing={4}>
-      {columnsInfo.map(({ field, label }: any) => {
-        return <Typography key={field}>{label}</Typography>;
+    <div className="flex flex--row table-header">
+      <div className="table-header-cell" style={{ minWidth: "50px" }}>
+        <input
+          type="checkbox"
+          className="checkbox"
+          checked={allRowsSelected}
+          onChange={onSelectAllRows}
+        />
+      </div>
+      {columnsInfo.map(({ field, label, width }: any) => {
+        return (
+          <div
+            className="table-header-cell"
+            key={field}
+            style={{
+              width,
+            }}
+          >
+            <p>{label}</p>
+          </div>
+        );
       })}
-    </Stack>
+    </div>
   );
 }
 

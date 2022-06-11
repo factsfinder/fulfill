@@ -1,14 +1,14 @@
-import { Box } from "@mui/material";
-
+import { useState } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
 type columnProps = {
   field: string;
   label: string;
-  numeric: boolean;
-  width?: string | "auto";
-  cellClassName?: string;
+  numeric?: boolean;
+  align?: string | "left";
+  width?: string;
+  cellStyles?: object | undefined;
 };
 
 type tableProps = {
@@ -17,7 +17,7 @@ type tableProps = {
 };
 
 function DataTable({ columns, rows }: tableProps): JSX.Element {
-  const handleRowClick = (rowInfo: any) => () => {};
+  const [selectedRows, setSelectedRows] = useState<Array<number>>([]);
 
   const formattedRows = rows.reduce(
     (accumulator: object[], currentRow: any): any => {
@@ -33,17 +33,53 @@ function DataTable({ columns, rows }: tableProps): JSX.Element {
     []
   );
 
+  const handleRowClick = (rowInfo: any) => (event: any) => {
+    // console.log(rowInfo, event);
+  };
+
+  const handleSelectRow = (rowInfo: any) => (event: any) => {
+    let updatedSelectedRows = [];
+    if (event.target.checked) {
+      updatedSelectedRows = [...selectedRows, rowInfo?.[0]?.value].filter(
+        (x) => x
+      );
+    } else {
+      updatedSelectedRows = selectedRows.filter(
+        (r) => r !== rowInfo?.[0]?.value
+      );
+    }
+    setSelectedRows(updatedSelectedRows);
+  };
+
+  const handleSelectAllRows = (event: any) => {
+    if (event.target.checked) {
+      setSelectedRows(formattedRows.map((r: any) => r?.[0]?.value));
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
+  console.log(selectedRows);
+
   return (
-    <Box>
-      <TableHeader columnsInfo={columns} />
-      <Box>
-        {formattedRows.map((r: any) => {
-          return (
-            <TableRow key={r?.[0]?.id} rowData={r} onClick={handleRowClick(r)} />
-          );
-        })}
-      </Box>
-    </Box>
+    <div className="wrapper">
+      <TableHeader
+        columnsInfo={columns}
+        allRowsSelected={formattedRows.length === selectedRows.length}
+        onSelectAllRows={handleSelectAllRows}
+      />
+      {formattedRows.map((r: any) => {
+        return (
+          <TableRow
+            key={r?.[0]?.id}
+            rowData={r}
+            isSelected={selectedRows.includes(r?.[0]?.value)}
+            onClick={handleRowClick(r)}
+            onCheckRow={handleSelectRow(r)}
+          />
+        );
+      })}
+    </div>
   );
 }
 
