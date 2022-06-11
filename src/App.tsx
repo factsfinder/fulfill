@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 import DataTable from "./DataTable";
 
@@ -15,24 +16,45 @@ const tableColumns = [
   },
 ];
 
+const ROWS_PER_PAGE = 15;
+
 function App() {
-  const [tableRows, setTableRows] = useState([]);
+  const { ref: loadingRef, inView } = useInView();
+  const [tableRows, setTableRows] = useState<Array<{}>>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isLoadedAll, setIsLoadedAll] = useState<boolean>(false);
+
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `https://jsonplaceholder.typicode.com/photos?_page=${currentPage}&_limit=${ROWS_PER_PAGE}`
+      );
+      if (res?.data?.length > 0) {
+        setTableRows([...tableRows, ...res.data]);
+        setCurrentPage(currentPage + 1); // updating the current page for the next fetch req on scroll
+      } else {
+        setIsLoadedAll(true);
+      }
+    } catch (err) {
+      console.warn("error fetching the data: ", err);
+    }
+  };
 
   useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/photos")
-      .then((res) => {
-        const rowsData = res.data?.slice(0, 15) ?? [];
-        setTableRows(rowsData);
-      })
-      .catch((err) => {
-        console.log("error fetching the data: ", err);
-      });
-  }, []);
+    // `inview` will be `true` if `loading...` text is in view on scroll.
+    if (inView) {
+      fetchData();
+    }
+  }, [inView, fetchData]);
 
   return (
     <div className="container flex flex--column">
       <DataTable columns={tableColumns} rows={tableRows} />
+      {!isLoadedAll && (
+        <div ref={loadingRef}>
+          <span>Loading...</span>
+        </div>
+      )}
     </div>
   );
 }

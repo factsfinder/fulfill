@@ -19,6 +19,7 @@ type tableProps = {
 function DataTable({ columns, rows }: tableProps): JSX.Element {
   const [selectedRows, setSelectedRows] = useState<Array<number>>([]);
 
+  // Todo: memoize using useMemo
   const formattedRows = rows.reduce(
     (accumulator: object[], currentRow: any): any => {
       const acc = accumulator;
@@ -58,8 +59,6 @@ function DataTable({ columns, rows }: tableProps): JSX.Element {
       setSelectedRows([]);
     }
   };
-
-  console.log(selectedRows);
 
   return (
     <div className="wrapper">
