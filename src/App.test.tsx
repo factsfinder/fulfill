@@ -1,9 +1,11 @@
-import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import {
+  render,
+  screen,
+  cleanup,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 import App from "./App";
-import DataTable from "./DataTable/index";
-import TableRow from "./DataTable/TableRow";
-import TableCell from "./DataTable/TableCell";
 
 describe("Data Table: ", () => {
   beforeEach(() => {
@@ -18,17 +20,17 @@ describe("Data Table: ", () => {
   });
   afterEach(cleanup);
 
-  it("<DataTable/>", () => { })
-  
-  it("Loading text is visible before fetching the data", () => {
+  it("Loading text container is visible before fetching the data", async () => {
     render(<App />);
-    const loadingText = screen.getByText(/Loading.../i);
-    expect(loadingText).toBeInTheDocument();
+    const loadingDiv = screen.getByRole("note");
+    expect(loadingDiv).toBeInTheDocument();
   });
 
-  it("Loading should be removed from the dom when no data is returned", () => {
-    render(<App />);
-    const loadingText = screen.getByText(/Loading.../i);
-    expect(loadingText).toBeNull();
+  it("handles select all checkbox click correctly", async () => {
+    const { getByRole } = render(<App />);
+    const selectAllCheckbox = getByRole("checkbox");
+    await userEvent.click(selectAllCheckbox);
+    expect(selectAllCheckbox).toBeInTheDocument();
+    expect(selectAllCheckbox).toBeChecked();
   });
 });

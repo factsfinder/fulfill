@@ -16,7 +16,7 @@ const tableColumns = [
   },
 ];
 
-const ROWS_PER_PAGE = 2500;
+const ROWS_PER_PAGE = 15;
 
 function App() {
   const { ref: loadingRef, inView } = useInView();
@@ -54,7 +54,7 @@ function App() {
       <h2 className="heading">Data Table</h2>
       <DataTable columns={tableColumns} rows={tableRows} />
       {!isLoadedAll && (
-        <div ref={loadingRef} style={{ textAlign: "center" }}>
+        <div ref={loadingRef} style={{ textAlign: "center" }} role="note">
           <span>Loading...</span>
         </div>
       )}

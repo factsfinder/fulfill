@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
+import { formatRows } from "../helpers";
+
 type columnProps = {
   field: string; // should be same as the `key` of a row data object.
   label: string; // Will be the column name on the Table Header
@@ -15,20 +17,6 @@ type tableProps = {
   columns: columnProps[];
   rows: {}[];
 };
-
-function formatRows(rows: any, columns: any) {
-  return rows.reduce((accumulator: object[], currentRow: any): any => {
-    const acc = accumulator;
-    const data = columns.map((col: columnProps): any => ({
-      ...col,
-      // this will serve as the value of `key` prop when mapping and also to identity the row
-      id: `${currentRow.id}-${col.field}`,
-      value: currentRow[col.field],
-    }));
-    acc.push(data);
-    return acc;
-  }, []);
-}
 
 function DataTable({ columns, rows }: tableProps): JSX.Element {
   const [selectedRows, setSelectedRows] = useState<any>({}); // {row_id: row_value}

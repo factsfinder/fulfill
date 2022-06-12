@@ -9,7 +9,7 @@ function TableRow({
   isSelected,
 }: any): JSX.Element {
   return (
-    <div className="flex flex--row table-row" onClick={onClick}>
+    <div className="flex flex--row table-row" onClick={onClick} role="listitem">
       <div className="table-cell" style={{ minWidth: "50px" }}>
         <input
           type="checkbox"
