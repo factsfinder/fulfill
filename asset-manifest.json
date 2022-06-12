@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/fulfill/static/css/main.757a5648.css",
+    "main.js": "/fulfill/static/js/main.1e7ff4b0.js",
+    "index.html": "/fulfill/index.html",
+    "main.757a5648.css.map": "/fulfill/static/css/main.757a5648.css.map",
+    "main.1e7ff4b0.js.map": "/fulfill/static/js/main.1e7ff4b0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.757a5648.css",
+    "static/js/main.1e7ff4b0.js"
+  ]
+}
