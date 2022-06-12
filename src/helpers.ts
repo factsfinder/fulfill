@@ -1,3 +1,4 @@
+// Note: every row will be formatted to an array of objects where every object contains details of a single cell. 
 export function formatRows(rows: any, columns: any) {
   return rows.reduce((accumulator: object[], currentRow: any): any => {
     const acc = accumulator;

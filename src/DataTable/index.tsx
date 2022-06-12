@@ -29,7 +29,7 @@ function DataTable({ columns, rows }: tableProps): JSX.Element {
   }, [rows, columns]);
 
   const handleRowClick = (rowInfo: any) => (event: any) => {
-    // console.log(rowInfo, event);
+    alert(`click on rowId: ${rowInfo[0].value}`);
   };
 
   const handleSelectRow = (rowInfo: any) => (event: any) => {

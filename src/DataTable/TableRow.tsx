@@ -15,6 +15,7 @@ function TableRow({
           type="checkbox"
           className="checkbox"
           checked={isSelected}
+          onClick={(e) => e.stopPropagation()}
           onChange={onCheckRow}
         />
       </div>
