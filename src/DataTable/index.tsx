@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
 type columnProps = {
-  field: string;
-  label: string;
+  field: string; // should be same as the `key` of a row data object.
+  label: string; // Will be the column name on the Table Header
   numeric?: boolean;
   align?: string | "left";
   width?: string;
@@ -16,63 +16,72 @@ type tableProps = {
   rows: {}[];
 };
 
-function DataTable({ columns, rows }: tableProps): JSX.Element {
-  const [selectedRows, setSelectedRows] = useState<Array<number>>([]);
+function formatRows(rows: any, columns: any) {
+  return rows.reduce((accumulator: object[], currentRow: any): any => {
+    const acc = accumulator;
+    const data = columns.map((col: columnProps): any => ({
+      ...col,
+      // this will serve as the value of `key` prop when mapping and also to identity the row
+      id: `${currentRow.id}-${col.field}`,
+      value: currentRow[col.field],
+    }));
+    acc.push(data);
+    return acc;
+  }, []);
+}
 
-  // Todo: memoize using useMemo
-  const formattedRows = rows.reduce(
-    (accumulator: object[], currentRow: any): any => {
-      const acc = accumulator;
-      const data = columns.map((col: columnProps): any => ({
-        ...col,
-        id: `${currentRow.id}-${col.field}`,
-        value: currentRow[col.field],
-      }));
-      acc.push(data);
-      return acc;
-    },
-    []
-  );
+function DataTable({ columns, rows }: tableProps): JSX.Element {
+  const [selectedRows, setSelectedRows] = useState<any>({}); // {row_id: row_value}
+  const [formattedRows, setFormattedRows] = useState<any>([]);
+
+  useEffect(() => {
+    const updatedRows = formatRows(rows, columns);
+    setFormattedRows([...formattedRows, ...updatedRows]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows, columns]);
 
   const handleRowClick = (rowInfo: any) => (event: any) => {
     // console.log(rowInfo, event);
   };
 
   const handleSelectRow = (rowInfo: any) => (event: any) => {
-    let updatedSelectedRows = [];
+    let updatedSelectedRows = selectedRows;
     if (event.target.checked) {
-      updatedSelectedRows = [...selectedRows, rowInfo?.[0]?.value].filter(
-        (x) => x
-      );
+      updatedSelectedRows[rowInfo[0].id] = rowInfo[0].value;
     } else {
-      updatedSelectedRows = selectedRows.filter(
-        (r) => r !== rowInfo?.[0]?.value
-      );
+      delete updatedSelectedRows[rowInfo[0].id];
     }
-    setSelectedRows(updatedSelectedRows);
+    setSelectedRows({ ...updatedSelectedRows });
   };
 
   const handleSelectAllRows = (event: any) => {
     if (event.target.checked) {
-      setSelectedRows(formattedRows.map((r: any) => r?.[0]?.value));
+      const allRows = selectedRows;
+      formattedRows.forEach((row: any) => {
+        allRows[row[0].id] = row[0].value;
+      });
+      setSelectedRows({ ...allRows });
     } else {
-      setSelectedRows([]);
+      setSelectedRows({});
     }
   };
 
+  const areAllRowsSelected =
+    formattedRows.length === Object.keys(selectedRows).length;
+
   return (
-    <div className="wrapper">
+    <div className="container">
       <TableHeader
         columnsInfo={columns}
-        allRowsSelected={formattedRows.length === selectedRows.length}
+        allRowsSelected={areAllRowsSelected}
         onSelectAllRows={handleSelectAllRows}
       />
       {formattedRows.map((r: any) => {
         return (
           <TableRow
-            key={r?.[0]?.id}
+            key={r[0].id}
             rowData={r}
-            isSelected={selectedRows.includes(r?.[0]?.value)}
+            isSelected={!!selectedRows[r[0].id]}
             onClick={handleRowClick(r)}
             onCheckRow={handleSelectRow(r)}
           />

@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import TableCell from "./TableCell";
 
 function TableRow({
@@ -23,4 +25,4 @@ function TableRow({
   );
 }
 
-export default TableRow;
+export default memo(TableRow);

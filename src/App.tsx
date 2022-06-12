@@ -16,7 +16,7 @@ const tableColumns = [
   },
 ];
 
-const ROWS_PER_PAGE = 15;
+const ROWS_PER_PAGE = 2500;
 
 function App() {
   const { ref: loadingRef, inView } = useInView();
@@ -30,28 +30,31 @@ function App() {
         `https://jsonplaceholder.typicode.com/photos?_page=${currentPage}&_limit=${ROWS_PER_PAGE}`
       );
       if (res?.data?.length > 0) {
-        setTableRows([...tableRows, ...res.data]);
-        setCurrentPage(currentPage + 1); // updating the current page for the next fetch req on scroll
+        setTableRows(res.data);
+        setCurrentPage(currentPage + 1); // updating the currentpage value for the next fetchdata on scrolldown
       } else {
         setIsLoadedAll(true);
       }
     } catch (err) {
       console.warn("error fetching the data: ", err);
+      setIsLoadedAll(true);
     }
   };
 
   useEffect(() => {
-    // `inview` will be `true` if `loading...` text is in view on scroll.
+    // `inview` will be `true` if `loading...` text is visible on screen.
     if (inView) {
       fetchData();
     }
-  }, [inView, fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   return (
-    <div className="container flex flex--column">
+    <div className="container">
+      <h2 className="heading">Data Table</h2>
       <DataTable columns={tableColumns} rows={tableRows} />
       {!isLoadedAll && (
-        <div ref={loadingRef}>
+        <div ref={loadingRef} style={{ textAlign: "center" }}>
           <span>Loading...</span>
         </div>
       )}
